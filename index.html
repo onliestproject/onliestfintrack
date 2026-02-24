@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Onliest Expense Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Premium Serif Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="top-bar">
+    <h1>Onliest Wallet</h1>
+    <button id="darkToggle">🌙</button>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary">
+    <div class="main-balance">
+      <p>Total Balance</p>
+      <h2 id="balance">₹0</h2>
+    </div>
+
+    <div class="mini-cards">
+      <div class="card income">
+        <p>Income</p>
+        <h3 id="income">₹0</h3>
+      </div>
+
+      <div class="card expense">
+        <p>Expense</p>
+        <h3 id="expense">₹0</h3>
+      </div>
+    </div>
+  </div>
+
+  <input type="month" id="monthFilter">
+
+  <h3>Transactions</h3>
+  <ul id="list"></ul>
+
+  <h3>Income vs Expense</h3>
+  <canvas id="expenseChart"></canvas>
+
+  <h3>Monthly Trend</h3>
+  <canvas id="trendChart"></canvas>
+
+  <h3>Category Breakdown</h3>
+  <canvas id="categoryChart"></canvas>
+
+</div>
+
+<button class="fab" onclick="openModal()">+</button>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3>Add Transaction</h3>
+
+    <form id="expenseForm">
+
+      <input type="date" id="date" required>
+
+      <select id="type" required>
+        <option value="">Select Type</option>
+        <option value="Income">Income</option>
+        <option value="Expense">Expense</option>
+      </select>
+
+      <!-- NEW CATEGORY DROPDOWN -->
+      <select id="category" required>
+        <option value="">Select Category</option>
+      </select>
+
+      <input type="number" id="amount" placeholder="Amount" required>
+      <input type="text" id="note" placeholder="Note (optional)">
+
+      <button type="submit">Add</button>
+    </form>
+
+    <button class="close-btn" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
