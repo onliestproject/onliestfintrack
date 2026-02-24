@@ -12,9 +12,9 @@ const typeSelect = document.getElementById("type");
 const categories = {
   Income: ["💵Savings","💼Salary","🏢Business","📈Investment","🧑‍💻Freelance","🎁Gift","➕Other"],
   Expense: [
-    "🍔Food","Gifts","Health/medical","Home","Transportation",
-    "Personal","Pets","Utilities","Travel","Debt",
-    "Other","Stocks","Sending home"
+    "🍔Food","🎀Gifts","🏥Health/medical","🏠Home","🚌Transportation",
+    "🧴Personal","🐾Pets","💡Utilities","🚙Travel","💳Debt",
+    "➖Other","📊Stocks","🏡💸Sending home"
   ]
 };
 
@@ -205,4 +205,5 @@ async function loadData() {
 }
 
 /* INITIAL LOAD */
+
 loadData();
