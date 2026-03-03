@@ -33,6 +33,15 @@ typeSelect.addEventListener("change", () => {
   }
 });
 
+/* Currency Formatter */
+function formatCurrency(amount) {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0
+  }).format(amount);
+}
+
 /* Format Date */
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -63,10 +72,12 @@ document.getElementById("expenseForm").addEventListener("submit", async e => {
   });
 
   closeModal();
+  document.getElementById("expenseForm").reset();
+  document.getElementById("date").valueAsDate = new Date();
   loadData();
 });
 
-/* DELETE TRANSACTION (SAFE) */
+/* DELETE */
 async function deleteRow(rowNumber) {
   await fetch(api, {
     method: "POST",
@@ -77,7 +88,6 @@ async function deleteRow(rowNumber) {
       })
     })
   });
-
   loadData();
 }
 
@@ -85,7 +95,6 @@ async function deleteRow(rowNumber) {
 function openModal() {
   document.getElementById("modal").style.display = "flex";
 }
-
 function closeModal() {
   document.getElementById("modal").style.display = "none";
 }
@@ -104,10 +113,7 @@ async function loadData() {
   const res = await fetch(api);
   let rows = await res.json();
 
-  /* Sort by DATE (latest first) */
-  rows.sort((a, b) => {
-    return new Date(b.date) - new Date(a.date);
-  });
+  rows.sort((a, b) => new Date(b.date) - new Date(a.date));
 
   const filterMonth = document.getElementById("monthFilter").value;
 
@@ -139,27 +145,39 @@ async function loadData() {
       categoryData[category] += amount;
     }
 
-    /* Render Transaction */
     const li = document.createElement("li");
+    li.classList.add("transaction");
+
     li.innerHTML = `
-      <div>
-        <strong>${category}</strong><br>
-        <small>${formatDate(r.date)}${r.note ? " • " + r.note : ""}</small>
+      <div class="left">
+        <div class="category">${category}</div>
+        <div class="meta">
+          ${formatDate(r.date)}
+          ${r.note ? " • " + r.note : ""}
+        </div>
       </div>
-      <div>
-        ₹${amount}
-        <button class="delete-btn" onclick="deleteRow(${r.rowNumber})">X</button>
+
+      <div class="right ${r.type === "Income" ? "income" : "expense"}">
+        ${r.type === "Income" ? "+" : "-"} ${formatCurrency(amount)}
+        <button class="delete-btn" onclick="deleteRow(${r.rowNumber})">✖</button>
       </div>
     `;
+
     list.appendChild(li);
   });
 
-  /* Update Summary */
-  document.getElementById("income").innerText = "₹" + income;
-  document.getElementById("expense").innerText = "₹" + expense;
-  document.getElementById("balance").innerText = "₹" + (income - expense);
+  if (list.innerHTML === "") {
+    list.innerHTML = `
+      <div style="text-align:center; padding:20px; opacity:0.6;">
+        No transactions found
+      </div>
+    `;
+  }
 
-  /* Destroy Old Charts */
+  document.getElementById("income").innerText = formatCurrency(income);
+  document.getElementById("expense").innerText = formatCurrency(expense);
+  document.getElementById("balance").innerText = formatCurrency(income - expense);
+
   if (expenseChart) expenseChart.destroy();
   if (trendChart) trendChart.destroy();
   if (categoryChart) categoryChart.destroy();
@@ -180,30 +198,87 @@ async function loadData() {
   trendChart = new Chart(document.getElementById("trendChart"), {
     type: "line",
     data: {
-      labels: Object.keys(monthlyData),
+      labels: Object.keys(monthlyData).map(m => {
+        const date = new Date(m + "-01");
+        return date.toLocaleString("en-IN", { month: "short", year: "numeric" });
+      }),
       datasets: [{
         label: "Monthly Expense",
         data: Object.values(monthlyData),
         borderColor: "#5f6af2",
-        fill: false
+        fill: false,
+        tension: 0.3
       }]
     }
   });
 
-  /* Category Breakdown */
-  categoryChart = new Chart(document.getElementById("categoryChart"), {
-    type: "bar",
-    data: {
-      labels: Object.keys(categoryData),
-      datasets: [{
-        label: "Category Expense",
-        data: Object.values(categoryData),
-        backgroundColor: "#8f94fb"
-      }]
+  /* CATEGORY CHART */
+
+const totalExpense = Object.values(categoryData).reduce((a, b) => a + b, 0);
+
+categoryChart = new Chart(document.getElementById("categoryChart"), {
+  type: "polarArea",
+  data: {
+    labels: Object.keys(categoryData),
+    datasets: [{
+      data: Object.values(categoryData),
+      backgroundColor: [
+        "#5f6af2",
+        "#ff6b6b",
+        "#2ecc71",
+        "#f39c12",
+        "#9b59b6",
+        "#1abc9c",
+        "#e84393",
+        "#00cec9",
+        "#fdcb6e",
+        "#6c5ce7"
+      ],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,  
+
+    layout: {
+      padding: 10
+    },
+
+    plugins: {
+      legend: {
+        position: "bottom",   
+        labels: {
+          boxWidth: 12,
+          font: {
+            size: 11       
+          }
+        }
+      },
+
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const value = context.raw;
+            const percentage = ((value / totalExpense) * 100).toFixed(1);
+            return `${context.label}: ₹${value} (${percentage}%)`;
+          }
+        }
+      }
+    },
+
+    scales: {
+      r: {
+        ticks: {
+          display: false
+        },
+        grid: {
+          circular: true
+        }
+      }
     }
-  });
+  }
+});
 }
-
-/* INITIAL LOAD */
 
 loadData();
