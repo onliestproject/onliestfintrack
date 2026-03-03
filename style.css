@@ -1,10 +1,18 @@
+/* ===============================
+   RESET
+================================= */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Playfair Display', serif;
-  transition: 0.3s;
+  transition: all 0.25s ease;
 }
+
+/* ===============================
+   BODY
+================================= */
 
 body {
   background: linear-gradient(135deg, #a8edea, #fed6e3);
@@ -12,11 +20,16 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  padding: 20px;
 }
 
 body.dark {
   background: #121212;
 }
+
+/* ===============================
+   APP CONTAINER
+================================= */
 
 .app {
   width: 100%;
@@ -33,19 +46,37 @@ body.dark .app {
   color: white;
 }
 
+/* ===============================
+   TOP BAR
+================================= */
+
 .top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 18px;
+}
+
+.top-bar h1 {
+  font-size: 24px;
+  font-weight: 600;
 }
 
 #darkToggle {
   border: none;
-  background: none;
-  font-size: 20px;
+  background: rgba(0,0,0,0.05);
+  padding: 8px 10px;
+  border-radius: 10px;
   cursor: pointer;
 }
+
+body.dark #darkToggle {
+  background: rgba(255,255,255,0.1);
+}
+
+/* ===============================
+   SUMMARY
+================================= */
 
 .summary {
   margin-bottom: 20px;
@@ -54,15 +85,17 @@ body.dark .app {
 .main-balance {
   background: linear-gradient(135deg, #5f6af2, #8f94fb);
   color: white;
-  padding: 20px;
+  padding: 22px;
   border-radius: 25px;
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
+  box-shadow: 0 15px 40px rgba(95,106,242,0.4);
 }
 
 .main-balance h2 {
   font-size: 34px;
   font-weight: 700;
+  margin-top: 6px;
 }
 
 .mini-cards {
@@ -86,47 +119,105 @@ body.dark .card {
 .income h3 { color: #2ecc71; }
 .expense h3 { color: #ff4d6d; }
 
+/* ===============================
+   FILTER
+================================= */
+
 #monthFilter {
   margin-bottom: 15px;
   width: 100%;
   padding: 10px;
   border-radius: 12px;
   border: 1px solid #ddd;
+  font-size: 14px;
 }
+
+body.dark #monthFilter {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  color: white;
+}
+
+/* ===============================
+   TRANSACTIONS
+================================= */
 
 ul {
   list-style: none;
-  max-height: 200px;
+  max-height: 230px;
   overflow-y: auto;
   margin-bottom: 20px;
+  padding-right: 5px;
+}
+
+ul::-webkit-scrollbar {
+  width: 6px;
+}
+
+ul::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 10px;
+}
+
+body.dark ul::-webkit-scrollbar-thumb {
+  background: #555;
 }
 
 li {
-  background: white;
-  padding: 14px;
+  background: #f7f7f7;
+  padding: 14px 16px;
   border-radius: 18px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
 }
 
 body.dark li {
   background: #2b2b2b;
 }
 
+li:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+.income-text {
+  color: #2ecc71;
+  font-weight: 600;
+}
+
+.expense-text {
+  color: #ff4d6d;
+  font-weight: 600;
+}
+
 .delete-btn {
   background: #ff4d6d;
   border: none;
-  padding: 6px 10px;
-  border-radius: 10px;
+  padding: 6px 9px;
+  border-radius: 50%;
   color: white;
   cursor: pointer;
+  font-size: 12px;
 }
+
+.delete-btn:hover {
+  background: #e63b5c;
+}
+
+/* ===============================
+   CHARTS
+================================= */
 
 canvas {
   margin-bottom: 20px;
 }
+
+/* ===============================
+   FAB
+================================= */
 
 .fab {
   position: fixed;
@@ -136,11 +227,20 @@ canvas {
   height: 60px;
   border-radius: 50%;
   border: none;
-  font-size: 30px;
+  font-size: 28px;
   color: white;
   background: linear-gradient(135deg, #5f6af2, #8f94fb);
   cursor: pointer;
+  box-shadow: 0 15px 45px rgba(95,106,242,0.5);
 }
+
+.fab:hover {
+  transform: scale(1.1);
+}
+
+/* ===============================
+   MODAL
+================================= */
 
 .modal {
   position: fixed;
@@ -148,7 +248,7 @@ canvas {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.45);
   display: none;
   justify-content: center;
   align-items: center;
@@ -157,19 +257,20 @@ canvas {
 .modal-content {
   background: white;
   padding: 25px;
-  border-radius: 20px;
+  border-radius: 22px;
   width: 90%;
   max-width: 350px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
 }
 
 body.dark .modal-content {
-  background: #2b2b2b;
+  background: #1f1f1f;
 }
 
 .modal-content form {
   display: grid;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .modal-content input,
@@ -179,73 +280,80 @@ body.dark .modal-content {
   border: 1px solid #ddd;
 }
 
+body.dark .modal-content input,
+body.dark .modal-content select {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  color: white;
+}
+
 .modal-content button {
   padding: 10px;
   border-radius: 10px;
   border: none;
   background: #5f6af2;
   color: white;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background: #4b55e6;
 }
 
 .close-btn {
-  background: #999;
+  background: #888;
 }
 
-li {
+
+.transaction {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 16px;
-  border-radius: 18px;
-  margin-bottom: 12px;
-  background: #f7f7f7;
+  padding: 14px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-body.dark li {
-  background: #2b2b2b;
-}
-
-.transaction-left {
+.transaction .left {
   display: flex;
   flex-direction: column;
 }
 
-.transaction-title {
+.transaction .category {
   font-weight: 600;
-  font-size: 16px;
+  font-size: 15px;
 }
 
-.transaction-meta {
+.transaction .meta {
   font-size: 12px;
-  opacity: 0.6;
-  margin-top: 4px;
+  opacity: 0.7;
 }
 
-.transaction-right {
+.transaction .right {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.transaction-amount {
   font-weight: 600;
-  font-size: 16px;
 }
 
-.income-text {
+.transaction .income {
   color: #2ecc71;
 }
 
-.expense-text {
+.transaction .expense {
   color: #ff4d6d;
 }
 
 .delete-btn {
-  background: #ff4d6d;
   border: none;
-  padding: 6px 10px;
-  border-radius: 50%;
-  color: white;
+  background: transparent;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
+}
+
+#categoryChart {
+  height: 400px !important;
 }
