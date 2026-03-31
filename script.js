@@ -238,25 +238,22 @@ categoryChart = new Chart(document.getElementById("categoryChart"), {
         "#00cec9",
         "#fdcb6e",
         "#6c5ce7"
-      ],
-      borderWidth: 1
+      ]
     }]
   },
   options: {
     responsive: true,
-    maintainAspectRatio: false,  
-
-    layout: {
-      padding: 10
-    },
+    maintainAspectRatio: false,
 
     plugins: {
+
       legend: {
-        position: "bottom",   
+        position: "bottom",
         labels: {
-          boxWidth: 12,
+          usePointStyle: true,
+          pointStyle: "circle",
           font: {
-            size: 11       
+            size: 12
           }
         }
       },
@@ -271,7 +268,34 @@ categoryChart = new Chart(document.getElementById("categoryChart"), {
         }
       }
     }
-  }
+  },
+
+  plugins: [{
+    id: "percentageLabels",
+    afterDraw(chart) {
+
+      const {ctx} = chart;
+
+      chart.data.datasets.forEach((dataset, i) => {
+        const meta = chart.getDatasetMeta(i);
+
+        meta.data.forEach((arc, index) => {
+
+          const value = dataset.data[index];
+          const percent = ((value / totalExpense) * 100).toFixed(0) + "%";
+
+          const position = arc.tooltipPosition();
+
+          ctx.fillStyle = "#fff";
+          ctx.font = "bold 12px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+
+          ctx.fillText(percent, position.x, position.y);
+        });
+      });
+    }
+  }]
 });
 }
 
