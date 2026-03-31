@@ -194,17 +194,22 @@ async function loadData() {
     }
   });
 
-  /* Monthly Trend */
+  /* 🔥 MONTHLY TREND (FIXED ORDER) */
+
+  const sortedMonths = Object.keys(monthlyData).sort(
+    (a, b) => new Date(a) - new Date(b)
+  );
+
   trendChart = new Chart(document.getElementById("trendChart"), {
     type: "line",
     data: {
-      labels: Object.keys(monthlyData).map(m => {
+      labels: sortedMonths.map(m => {
         const date = new Date(m + "-01");
         return date.toLocaleString("en-IN", { month: "short", year: "numeric" });
       }),
       datasets: [{
         label: "Monthly Expense",
-        data: Object.values(monthlyData),
+        data: sortedMonths.map(m => monthlyData[m]),
         borderColor: "#5f6af2",
         fill: false,
         tension: 0.3
@@ -214,71 +219,56 @@ async function loadData() {
 
   /* CATEGORY CHART */
 
-const totalExpense = Object.values(categoryData).reduce((a, b) => a + b, 0);
+  const totalExpense = Object.values(categoryData).reduce((a, b) => a + b, 0);
 
-categoryChart = new Chart(document.getElementById("categoryChart"), {
-  type: "polarArea",
-  data: {
-    labels: Object.keys(categoryData),
-    datasets: [{
-      data: Object.values(categoryData),
-      backgroundColor: [
-        "#5f6af2",
-        "#ff6b6b",
-        "#2ecc71",
-        "#f39c12",
-        "#9b59b6",
-        "#1abc9c",
-        "#e84393",
-        "#00cec9",
-        "#fdcb6e",
-        "#6c5ce7"
-      ],
-      borderWidth: 1
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,  
-
-    layout: {
-      padding: 10
+  categoryChart = new Chart(document.getElementById("categoryChart"), {
+    type: "polarArea",
+    data: {
+      labels: Object.keys(categoryData),
+      datasets: [{
+        data: Object.values(categoryData),
+        backgroundColor: [
+          "#5f6af2",
+          "#ff6b6b",
+          "#2ecc71",
+          "#f39c12",
+          "#9b59b6",
+          "#1abc9c",
+          "#e84393",
+          "#00cec9",
+          "#fdcb6e",
+          "#6c5ce7"
+        ],
+        borderWidth: 1
+      }]
     },
-
-    plugins: {
-      legend: {
-        position: "bottom",   
-        labels: {
-          boxWidth: 12,
-          font: {
-            size: 11       
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: 10 },
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: { boxWidth: 12, font: { size: 11 } }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const value = context.raw;
+              const percentage = ((value / totalExpense) * 100).toFixed(1);
+              return `${context.label}: ₹${value} (${percentage}%)`;
+            }
           }
         }
       },
-
-      tooltip: {
-        callbacks: {
-          label: function(context) {
-            const value = context.raw;
-            const percentage = ((value / totalExpense) * 100).toFixed(1);
-            return `${context.label}: ₹${value} (${percentage}%)`;
-          }
-        }
-      }
-    },
-
-    scales: {
-      r: {
-        ticks: {
-          display: false
-        },
-        grid: {
-          circular: true
+      scales: {
+        r: {
+          ticks: { display: false },
+          grid: { circular: true }
         }
       }
     }
-  }
-});
+  });
 }
 
 loadData();
