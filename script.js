@@ -194,17 +194,22 @@ async function loadData() {
     }
   });
 
-  /* Monthly Trend */
+  /* MONTHLY TREND (FIXED ORDER) */
+
+  const sortedMonths = Object.keys(monthlyData).sort(
+    (a, b) => new Date(a) - new Date(b)
+  );
+
   trendChart = new Chart(document.getElementById("trendChart"), {
     type: "line",
     data: {
-      labels: Object.keys(monthlyData).map(m => {
+      labels: sortedMonths.map(m => {
         const date = new Date(m + "-01");
         return date.toLocaleString("en-IN", { month: "short", year: "numeric" });
       }),
       datasets: [{
         label: "Monthly Expense",
-        data: Object.values(monthlyData),
+        data: sortedMonths.map(m => monthlyData[m]),
         borderColor: "#5f6af2",
         fill: false,
         tension: 0.3
