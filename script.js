@@ -194,7 +194,7 @@ async function loadData() {
     }
   });
 
-  /* 🔥 MONTHLY TREND (FIXED ORDER) */
+  /*  MONTHLY TREND  */
 
   const sortedMonths = Object.keys(monthlyData).sort(
     (a, b) => new Date(a) - new Date(b)
@@ -222,7 +222,7 @@ async function loadData() {
   const totalExpense = Object.values(categoryData).reduce((a, b) => a + b, 0);
 
   categoryChart = new Chart(document.getElementById("categoryChart"), {
-    type: "polarArea",
+    type: "pie",
     data: {
       labels: Object.keys(categoryData),
       datasets: [{
