@@ -237,7 +237,12 @@ categoryChart = new Chart(document.getElementById("categoryChart"), {
         "#e84393",
         "#00cec9",
         "#fdcb6e",
-        "#6c5ce7"
+        "#6c5ce7",
+        "#e74c3c",
+        "#3498db",
+        "#27ae60",
+        "#8e44ad",
+        "#f1c40f"
       ]
     }]
   },
